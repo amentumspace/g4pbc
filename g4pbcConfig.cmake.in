@@ -1,0 +1,17 @@
+
+# replaced with code which makes the file relocatable
+@PACKAGE_INIT@
+
+# @PACKAGE_INCLUDE_INSTALL_DIR@ defined for each PATH_VARS variable
+# relocatable version of the input path variable
+# Input can be relative or absolute path
+set_and_check(g4cbp_INCLUDE_DIR @PACKAGE_INCLUDE_INSTALL_DIR@)
+
+#only do this once for the project
+if(NOT TARGET g4pbc)
+  include(${CMAKE_CURRENT_LIST_DIR}/g4pbcTargets.cmake)
+endif()
+
+set(g4cbp_INCLUDE_DIRS ${g4pbc_INCLUDE_DIR})
+set(g4cbp_LIBRARIES g4pbc)
+set(g4cbp_LIBRARY g4pbc::g4pbc)

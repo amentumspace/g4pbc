@@ -1,0 +1,14 @@
+/run/verbose 1
+/tracking/verbose 0
+
+/gps/particle geantino
+
+/gps/energy 1 MeV
+/gps/ang/type iso
+/gps/pos/type Plane
+/gps/pos/centre 0. 0. 0. cm
+/gps/pos/shape Square
+
+/run/setCut 0.1 mm
+/process/em/applyCuts 1
+/run/dumpCouples
