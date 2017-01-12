@@ -41,7 +41,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //continue defining the geometry with the logical Periodic world as mother volume
 
   // define a volume with dimensions the same as those of the Periodic world volume
-  G4Box* daughter = new G4Box("daughter", world_size_xy/2, world_size_xy/2, world_size_z/2);
+  G4Box* daughter = new G4Box("daughter", world_size_xy/4, world_size_xy/4, world_size_z/2);
   G4LogicalVolume* logical_daughter = new G4LogicalVolume(daughter, air, "logical_daughter");
 
   new G4PVPlacement(0, G4ThreeVector(), logical_daughter, "physical_daughter",

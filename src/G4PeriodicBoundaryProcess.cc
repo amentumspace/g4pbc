@@ -65,10 +65,13 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
     G4cout << " Particle at Boundary! " << G4endl;
     if (thePrePV)  G4cout << " thePrePV:  " << thePrePV->GetName()  << G4endl;
     if (thePostPV) G4cout << " thePostPV: " << thePostPV->GetName() << G4endl;
+    G4cout << "step length " << aTrack.GetStepLength() << G4endl;
   }
 
+
+
   //avoid trapped particles at boundaries by testing for minimum step length
-	if (aTrack.GetStepLength()<=kCarTolerance/2){
+	if (aTrack.GetStepLength() <= kCarTolerance/2){
     theStatus = StepTooSmall;
     if ( verboseLevel > 0) BoundaryProcessVerbose();
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
@@ -127,28 +130,24 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
     theGlobalNormal = -theGlobalNormal;
   }
 
-  /*account for situation whereby the current physical volume is a
-  daughter to the cyclic boundary world volume and mother-daughter have a common boundary
-  */
+  /*when the post step point is in the world volume, the eldest daughter will
+  be the periodic world volume, which has a skin associated. so we cycle or reflect*/
+
+  G4LogicalVolume* lvol = thePostPV->GetLogicalVolume();
+
+  if ( verboseLevel > 0 ) G4cout << "Post step logical " << lvol->GetName() << G4endl;
+
   G4LogicalSurface* Surface = NULL;
 
-  G4TouchableHistory* touchable =
-    (G4TouchableHistory*)( pStep->GetPreStepPoint()->GetTouchable() );
+  if (lvol->GetNoDaughters() > 0) {
 
-  //TODO remove this. a daughter volume that doesn't share a boundary will still have periodic PBCs
-  //instead of doing this, assert that daughter volume does not share a boundary with mother
-  G4int depth = touchable->GetHistoryDepth();
+    if ( verboseLevel > 0 )
+      G4cout << "eldest daughter " << lvol->GetDaughter(0)->GetName()<< G4endl;
 
-  for (G4int i = 0; i<depth; ++i) {
-    G4LogicalVolume* lvol = touchable->GetVolume()->GetLogicalVolume();
-    Surface = G4LogicalSkinSurface::GetSurface(lvol);
-    if ( verboseLevel > 0 ) {
-      G4cout << " Logical volume of touchable at depth " << i << " is " << \
-      lvol->GetName() << G4endl;
-    }
-    // we have found a logical skin surface associated with a volume at this boundary
-    if(Surface) break;
-    touchable->MoveUpHistory();
+    G4LogicalVolume* dlvol = lvol->GetDaughter(0)->GetLogicalVolume();
+
+    Surface = G4LogicalSkinSurface::GetSurface(dlvol);
+
   }
 
   if (Surface){
