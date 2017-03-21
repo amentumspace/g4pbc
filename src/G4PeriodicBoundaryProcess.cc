@@ -41,14 +41,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   fParticleChange.InitializeForPostStep(aTrack);
 
-  // Get hyperStep from  G4ParallelWorldProcess
-  //  NOTE: PostSetpDoIt of this process should be
-  //        invoked after G4ParallelWorldProcess!
   const G4Step* pStep = &aStep;
-
-  const G4Step* hStep = G4ParallelWorldProcess::GetHyperStep();
-
-  if (hStep) pStep = hStep;
 
   G4bool isOnBoundary = (pStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary);
 
