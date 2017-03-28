@@ -90,18 +90,16 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
   G4bool valid;
   //  Use the new method for Exit Normal in global coordinates,
   //    which provides the normal more reliably.
-  // ID of Navigator which limits step
-
-  G4int hNavId = G4ParallelWorldProcess::GetHypNavigatorID();
-  std::vector<G4Navigator*>::iterator iNav =
-    G4TransportationManager::GetTransportationManager()->
-    GetActiveNavigatorsIterator();
-  theGlobalNormal = (iNav[hNavId])->GetGlobalExitNormal(theGlobalPoint,&valid);
+  theGlobalNormal = G4TransportationManager::GetTransportationManager()\
+    ->GetNavigatorForTracking()->GetGlobalExitNormal(theGlobalPoint,&valid);
 
   if (valid) {
     theGlobalNormal = -theGlobalNormal;
   }
   else {
+
+    G4cout << "global normal " << theGlobalNormal << G4endl;
+
     G4ExceptionDescription ed;
     ed << " G4PeriodicBoundaryProcess/PostStepDoIt(): "
       << " The Navigator reports that it returned an invalid normal" << G4endl;
