@@ -3,7 +3,6 @@
 #include "G4GeometryTolerance.hh"
 #include "G4ios.hh"
 #include "G4Navigator.hh"
-#include "G4ParallelWorldProcess.hh"
 #include "G4ParticleChangeForPeriodic.hh"
 #include "G4TrackingManager.hh"
 #include "G4VTrajectory.hh"
