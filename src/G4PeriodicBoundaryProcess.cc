@@ -214,6 +214,15 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
             ->GetNavigatorForTracking();
           gNavigator->LocateGlobalPointWithinVolume(NewPosition);
 
+          //we must also notify the parallel process manager of the change in position
+          // ID of Navigator which limits step
+          G4int hNavId = G4ParallelWorldProcess::GetHypNavigatorID();
+          std::vector<G4Navigator*>::iterator iNav =
+                  G4TransportationManager::GetTransportationManager()->
+                                           GetActiveNavigatorsIterator();
+
+          (iNav[hNavId])->LocateGlobalPointWithinVolume(NewPosition);
+
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
           G4TrackingManager* tckm = evtm->GetTrackingManager();
