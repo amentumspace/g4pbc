@@ -5,6 +5,12 @@
 #include "G4LogicalBorderSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4OpticalPhoton.hh"
+#include "G4AntiNeutrinoE.hh"
+#include "G4NeutrinoE.hh"
+#include "G4AntiNeutrinoMu.hh"
+#include "G4NeutrinoMu.hh"
+#include "G4AntiNeutrinoTau.hh"
+#include "G4NeutrinoTau.hh"
 #include "G4ParticleChangeForPeriodic.hh"
 #include "G4TransportationManager.hh"
 #include "G4VDiscreteProcess.hh"
@@ -79,11 +85,29 @@ inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition
 {
   /*the process is not applicable to optical photons. If a logicalskinsurface
   is defined, then the optical photon would be cycled at any logicalskinsurface
-  
+
   TODO add applicability to optical photons by testing name of logicalskinsurface
   , for example.
   */
-   return ( &aParticleType != G4OpticalPhoton::OpticalPhoton() );
+
+  bool applicable = true;
+
+  if( &aParticleType == G4OpticalPhoton::OpticalPhoton() )
+    applicable = false;
+  else if ( &aParticleType == G4AntiNeutrinoE::AntiNeutrinoE() )
+    applicable = false;
+  else if ( &aParticleType == G4NeutrinoE::NeutrinoE() )
+    applicable = false;
+  else if ( &aParticleType == G4AntiNeutrinoMu::AntiNeutrinoMu() )
+    applicable = false;
+  else if ( &aParticleType == G4NeutrinoMu::NeutrinoMu() )
+    applicable = false;
+  else if ( &aParticleType == G4AntiNeutrinoTau::AntiNeutrinoTau() )
+    applicable = false;
+  else if ( &aParticleType == G4NeutrinoTau::NeutrinoTau() )
+    applicable = false;
+
+   return applicable;
 
 }
 

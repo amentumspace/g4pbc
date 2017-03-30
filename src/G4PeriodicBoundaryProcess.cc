@@ -6,6 +6,7 @@
 #include "G4ParticleChangeForPeriodic.hh"
 #include "G4TrackingManager.hh"
 #include "G4VTrajectory.hh"
+#include "G4ParallelWorldProcess.hh"
 
 G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName,
   G4ProcessType type, bool per_x, bool per_y, bool per_z, bool ref_walls) :
@@ -97,7 +98,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
   }
   else {
 
-    G4cout << "global normal " << theGlobalNormal << G4endl;
+    //G4cout << "global normal " << theGlobalNormal << G4endl;
 
     G4ExceptionDescription ed;
     ed << " G4PeriodicBoundaryProcess/PostStepDoIt(): "
