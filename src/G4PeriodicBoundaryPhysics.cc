@@ -40,6 +40,8 @@ void G4PeriodicBoundaryPhysics::ConstructProcess(){
 
   if(verboseLevel > 0) pbc->SetVerboseLevel(verboseLevel);
 
+  auto aParticleIterator=GetParticleIterator();
+
   aParticleIterator->reset();
 
   G4ProcessManager * pManager = 0;

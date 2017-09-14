@@ -146,8 +146,8 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
     if (verboseLevel > 0) G4cout << " Logical surface, periodic " << G4endl;
 
     //make sure that we are at a plane
-    bool on_plane = ((abs(theGlobalNormal.x()) == 1) ||
-      (abs(theGlobalNormal.y()) == 1) ||(abs(theGlobalNormal.z()) == 1));
+    bool on_plane = ((std::abs(theGlobalNormal.x()) == 1) ||
+      (std::abs(theGlobalNormal.y()) == 1) ||(std::abs(theGlobalNormal.z()) == 1));
 
     if(!on_plane){
       G4ExceptionDescription ed;
@@ -158,9 +158,9 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
         "Periodic boundary process must only occur for particle on periodic world surface");
     } else {
 
-      bool on_x_and_periodic = ((abs(theGlobalNormal.x()) == 1) && periodic_x);
-      bool on_y_and_periodic = ((abs(theGlobalNormal.y()) == 1) && periodic_y);
-      bool on_z_and_periodic = ((abs(theGlobalNormal.z()) == 1) && periodic_z);
+      bool on_x_and_periodic = ((std::abs(theGlobalNormal.x()) == 1) && periodic_x);
+      bool on_y_and_periodic = ((std::abs(theGlobalNormal.y()) == 1) && periodic_y);
+      bool on_z_and_periodic = ((std::abs(theGlobalNormal.z()) == 1) && periodic_z);
 
       bool on_a_periodic_plane = (on_x_and_periodic || on_y_and_periodic
         || on_z_and_periodic);
