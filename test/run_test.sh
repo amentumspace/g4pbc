@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 rm *.hdf5 *.log
 
-NPARTICLES=1000000
-NJOBS=10 #assumes you are running on a multi-core machine
+NPARTICLES=10000
+NJOBS=4 #assumes you are running on a multi-core machine
 PARTICLENAMES="geantino gamma e- proton neutron"
 
 # use the parallel utility to parallelise across available cores
