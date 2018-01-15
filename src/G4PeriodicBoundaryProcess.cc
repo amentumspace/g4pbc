@@ -206,13 +206,28 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           else
             G4cout << "global normal does not belong to periodic plane!!" << G4endl;
 
+          NewMomentum = OldMomentum;
+          NewPolarization = OldPolarization;
+
+          if (verboseLevel > 0) {
+            G4cout << " New Position:       " << NewPosition << G4endl;
+            G4cout << " New Momentum Direction: " << NewMomentum << G4endl;
+            G4cout << " New Polarization:       " << NewPolarization << G4endl;
+            BoundaryProcessVerbose();
+          }
+
+          fParticleChange.ProposeMomentumDirection(NewMomentum);
+          fParticleChange.ProposePolarization(NewPolarization);
           fParticleChange.ProposePosition(NewPosition);
 
           //we must notify the navigator that we have moved the particle artificially
           G4Navigator* gNavigator =
             G4TransportationManager::GetTransportationManager()
             ->GetNavigatorForTracking();
-          gNavigator->LocateGlobalPointWithinVolume(NewPosition);
+          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
+          gNavigator->LocateGlobalPointAndSetup(NewPosition, &NewMomentum);
+
+          G4cout << "updated navigator" << G4endl;
 
 
           //we must also notify the parallel process manager of the change in position
@@ -227,11 +242,14 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           */
 
           //force drawing of the step prior to periodic the particle
+
           G4EventManager* evtm = G4EventManager::GetEventManager();
           G4TrackingManager* tckm = evtm->GetTrackingManager();
           G4VTrajectory* fpTrajectory = NULL;
           fpTrajectory = tckm->GimmeTrajectory();
           if (fpTrajectory) fpTrajectory->AppendStep(pStep);
+
+          G4cout << "drawn trajectory" << G4endl;
 
         }
       }
