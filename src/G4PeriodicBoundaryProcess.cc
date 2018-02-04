@@ -61,8 +61,6 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
     G4cout << "step length " << aTrack.GetStepLength() << G4endl;
   }
 
-
-
   //avoid trapped particles at boundaries by testing for minimum step length
 	if (aTrack.GetStepLength() <= kCarTolerance/2){
     theStatus = StepTooSmall;
@@ -97,9 +95,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
     theGlobalNormal = -theGlobalNormal;
   }
   else {
-
-    //G4cout << "global normal " << theGlobalNormal << G4endl;
-
+    G4cout << "global normal " << theGlobalNormal << G4endl;
     G4ExceptionDescription ed;
     ed << " G4PeriodicBoundaryProcess/PostStepDoIt(): "
       << " The Navigator reports that it returned an invalid normal" << G4endl;
@@ -206,46 +202,33 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           else
             G4cout << "global normal does not belong to periodic plane!!" << G4endl;
 
-          NewMomentum = OldMomentum;
-          NewPolarization = OldPolarization;
+          NewMomentum = OldMomentum.unit();
+          NewPolarization = OldPolarization.unit();
 
           if (verboseLevel > 0) {
-            G4cout << " New Position:       " << NewPosition << G4endl;
+            G4cout << " New Position: " << NewPosition << G4endl;
+            G4cout << " New Momentum Direction: " << NewMomentum << G4endl;
+            G4cout << " New Polarization:       " << NewPolarization << G4endl;
             BoundaryProcessVerbose();
           }
+
+          fParticleChange.ProposeMomentumDirection(NewMomentum);
+          fParticleChange.ProposePolarization(NewPolarization);
           fParticleChange.ProposePosition(NewPosition);
 
           //we must notify the navigator that we have moved the particle artificially
           G4Navigator* gNavigator =
             G4TransportationManager::GetTransportationManager()
             ->GetNavigatorForTracking();
-          /*Informs the navigator that the last computed step was taken in its
-          entirety. This enables entering/exiting optimisation, and should be
-          called prior to calling LocateGlobalPointAndSetup().*/
-          gNavigator->SetGeometricallyLimitedStep() ;
           //Locates the volume containing the specified global point.
-          /*
-            G4VPhysicalVolume* LocateGlobalPointAndSetup(const G4ThreeVector& point,
-                                             const G4ThreeVector* direction=0,
-                                             const G4bool pRelativeSearch=true,
-                                             const G4bool ignoreDirection=true);
-              // Search the geometrical hierarchy for the volumes deepest in the hierarchy
-              // containing the point in the global coordinate space. Two main cases are:
-              //  i) If pRelativeSearch=false it makes use of no previous/state
-              //     information. Returns the physical volume containing the point,
-              //     with all previous mothers correctly set up.
-              // ii) If pRelativeSearch is set to true, the search begin is the
-              //     geometrical hierarchy at the location of the last located point,
-              //     or the endpoint of the previous Step if SetGeometricallyLimitedStep()
-              //     has been called immediately before.
-              // The direction is used (to check if a volume is entered) if either
-              //   - the argument ignoreDirection is false, or
-              //   - the Navigator has determined that it is on an edge shared by two or
-              //     more volumes.  (This is state information.)
-          */
-          gNavigator->LocateGlobalPointAndSetup(NewPosition, &NewMomentum,
-          true, false) ;
+
+          gNavigator->SetGeometricallyLimitedStep() ;
           //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
+          gNavigator->LocateGlobalPointAndSetup( NewPosition,
+                                                &NewMomentum,
+                                               true,
+                                               false) ;//do not ignore direction
+
 
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
