@@ -228,6 +228,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
                                                 &NewMomentum,
                                                true,
                                                false) ;//do not ignore direction
+          gNavigator->ComputeSafety(NewPosition);
 
 
           //force drawing of the step prior to periodic the particle
