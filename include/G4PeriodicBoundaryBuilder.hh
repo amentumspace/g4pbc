@@ -1,7 +1,7 @@
 #pragma once
 
 #include "globals.hh"
-#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumePeriodic.hh"
 #include "G4SystemOfUnits.hh"
 
 #include <map>
@@ -19,6 +19,6 @@ public:
 
 private:
 
-  G4LogicalVolume* logical_periodic;
+  G4LogicalVolumePeriodic* logical_periodic;
 
 };

@@ -1,6 +1,6 @@
 /run/verbose 1
 /tracking/verbose 0
-/gps/particle geantino
+/gps/particle opticalphoton
 /gps/energy 1 MeV
 /gps/ang/type iso
 /gps/pos/centre 0 0 0 m

@@ -2,8 +2,6 @@
 
 #include "G4Step.hh"
 #include "G4DynamicParticle.hh"
-#include "G4LogicalBorderSurface.hh"
-#include "G4LogicalSkinSurface.hh"
 #include "G4OpticalPhoton.hh"
 #include "G4AntiNeutrinoE.hh"
 #include "G4NeutrinoE.hh"
@@ -83,12 +81,6 @@ private:
 inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition&
   aParticleType)
 {
-  /*the process is not applicable to optical photons. If a logicalskinsurface
-  is defined, then the optical photon would be cycled at any logicalskinsurface
-
-  TODO add applicability to optical photons by testing name of logicalskinsurface
-  , for example.
-  */
 
   bool applicable = true;
 

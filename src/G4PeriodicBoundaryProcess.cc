@@ -2,6 +2,7 @@
 #include "G4EventManager.hh"
 #include "G4GeometryTolerance.hh"
 #include "G4ios.hh"
+#include "G4LogicalVolumePeriodic.hh"
 #include "G4Navigator.hh"
 #include "G4ParticleChangeForPeriodic.hh"
 #include "G4TrackingManager.hh"
@@ -122,28 +123,28 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   G4LogicalVolume* lvol = thePostPV->GetLogicalVolume();
 
-  if ( verboseLevel > 0 ) G4cout << "Post step logical " << lvol->GetName() << G4endl;
+  if ( verboseLevel > 0 ) 
+    G4cout << "Post step logical " << lvol->GetName() << G4endl;
 
-  G4LogicalSurface* Surface = NULL;
+  G4LogicalVolume* dlvol = NULL;
 
   if (lvol->GetNoDaughters() > 0) {
 
     if ( verboseLevel > 0 )
       G4cout << "eldest daughter " << lvol->GetDaughter(0)->GetName()<< G4endl;
 
-    G4LogicalVolume* dlvol = lvol->GetDaughter(0)->GetLogicalVolume();
-
-    Surface = G4LogicalSkinSurface::GetSurface(dlvol);
+    dlvol = lvol->GetDaughter(0)->GetLogicalVolume();
 
   }
 
-  if (Surface){
+  if (dlvol && dlvol->IsExtended()){
 
     if (verboseLevel > 0) G4cout << " Logical surface, periodic " << G4endl;
 
     //make sure that we are at a plane
     bool on_plane = ((std::abs(theGlobalNormal.x()) == 1) ||
-      (std::abs(theGlobalNormal.y()) == 1) ||(std::abs(theGlobalNormal.z()) == 1));
+      (std::abs(theGlobalNormal.y()) == 1) ||
+      (std::abs(theGlobalNormal.z()) == 1));
 
     if(!on_plane){
       G4ExceptionDescription ed;

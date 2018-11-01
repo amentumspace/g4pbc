@@ -1,7 +1,7 @@
 #include "G4PeriodicBoundaryBuilder.hh"
+#include "G4LogicalVolumePeriodic.hh"
 
 #include "G4Box.hh"
-#include "G4LogicalSkinSurface.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
@@ -34,12 +34,8 @@ G4LogicalVolume* G4PeriodicBoundaryBuilder::Construct(G4LogicalVolume* logical_w
   G4Box* periodic_world = new G4Box("cyclic", periodic_world_hx, periodic_world_hy,
     periodic_world_hz);
 
-  logical_periodic = new G4LogicalVolume(periodic_world,
+  logical_periodic = new G4LogicalVolumePeriodic(periodic_world,
     logical_world->GetMaterial(), "logical_periodic");
-
-  /*define the logical skin surface, this is used by the physics process to
-  identify whether a boundary is cyclic*/
-  new G4LogicalSkinSurface("periodic_surface", logical_periodic, NULL);
 
   logical_periodic->SetVisAttributes(G4Color::Magenta());
 
