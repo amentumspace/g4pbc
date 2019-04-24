@@ -141,10 +141,12 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
     if (verboseLevel > 0) G4cout << " Logical surface, periodic " << G4endl;
 
+    bool on_x = theGlobalNormal.isParallel(G4ThreeVector(1,0,0));
+    bool on_y = theGlobalNormal.isParallel(G4ThreeVector(0,1,0));
+    bool on_z = theGlobalNormal.isParallel(G4ThreeVector(0,0,1));
+
     //make sure that we are at a plane
-    bool on_plane = ((std::abs(theGlobalNormal.x()) == 1) ||
-      (std::abs(theGlobalNormal.y()) == 1) ||
-      (std::abs(theGlobalNormal.z()) == 1));
+    bool on_plane = (on_x || on_y || on_z);
 
     if(!on_plane){
       G4ExceptionDescription ed;
@@ -155,12 +157,12 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
         "Periodic boundary process must only occur for particle on periodic world surface");
     } else {
 
-      bool on_x_and_periodic = ((std::abs(theGlobalNormal.x()) == 1) && periodic_x);
-      bool on_y_and_periodic = ((std::abs(theGlobalNormal.y()) == 1) && periodic_y);
-      bool on_z_and_periodic = ((std::abs(theGlobalNormal.z()) == 1) && periodic_z);
+      bool on_x_and_periodic = (on_x && periodic_x);
+      bool on_y_and_periodic = (on_y && periodic_y);
+      bool on_z_and_periodic = (on_z && periodic_z);
 
-      bool on_a_periodic_plane = (on_x_and_periodic || on_y_and_periodic
-        || on_z_and_periodic);
+      bool on_a_periodic_plane = 
+        (on_x_and_periodic || on_y_and_periodic || on_z_and_periodic);
 
       if (on_a_periodic_plane) {
 
@@ -197,9 +199,12 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           if ( verboseLevel > 0) G4cout << "Global normal " << theGlobalNormal << G4endl;
 
           //translate a component of the position vector according to which plane we are on
-          if (on_x_and_periodic) NewPosition.setX(-NewPosition.x());
-          else if (on_y_and_periodic) NewPosition.setY(-NewPosition.y());
-          else if (on_z_and_periodic) NewPosition.setZ(-NewPosition.z());
+          if (on_x_and_periodic) 
+            NewPosition.setX(-NewPosition.x());
+          else if (on_y_and_periodic) 
+            NewPosition.setY(-NewPosition.y());
+          else if (on_z_and_periodic) 
+            NewPosition.setZ(-NewPosition.z());
           else
             G4cout << "global normal does not belong to periodic plane!!" << G4endl;
 
