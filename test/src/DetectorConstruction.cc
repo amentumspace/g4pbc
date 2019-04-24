@@ -39,7 +39,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   G4Box* world = new G4Box("world", world_xy/2, world_xy/2, world_size_z/2);
 
-  G4LogicalVolume* logical_world = new G4LogicalVolume(world, test_material, "logical_world");
+  G4LogicalVolume* logical_world = new G4LogicalVolume(
+    world, test_material, "logical_world");
   G4VisAttributes * world_vis_att = new G4VisAttributes(G4Color::Grey());
   world_vis_att->SetForceWireframe(true);
   logical_world->SetVisAttributes(world_vis_att);

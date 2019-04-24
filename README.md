@@ -36,7 +36,7 @@ several particle types in a material of interest.
 
 Clone this repository with the following command:
 
-    git clone https://github.com/amentumdefsec/g4pbc.git
+    git clone https://github.com/amentumspace/g4pbc.git
 
 # Installation
 
@@ -87,7 +87,7 @@ contains a single method, Construct, that creates a box with half width
 equal to that of the world volume and of the same material.
 
 The world volume is then resized to include a buffer to avoid sharing a surface
-with the world volume.
+with the periodic world volume.
 
     #include "G4PeriodicBoundaryBuilder.hh"
 
@@ -270,7 +270,7 @@ This package includes code developed by Members of the
 
 ## License
 
-Copyright (c) 2016-2017 Amentum Pty Ltd
+Copyright (c) 2016-2019 Amentum Pty Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

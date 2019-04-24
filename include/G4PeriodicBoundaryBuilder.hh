@@ -8,17 +8,16 @@
 #include <string>
 using namespace std;
 
-class G4PeriodicBoundaryBuilder {
+class G4PeriodicBoundaryBuilder
+{
 
 public:
   G4PeriodicBoundaryBuilder();
 
   ~G4PeriodicBoundaryBuilder();
 
-  G4LogicalVolume* Construct( G4LogicalVolume* );
+  G4LogicalVolume *Construct(G4LogicalVolume *);
 
 private:
-
-  G4LogicalVolumePeriodic* logical_periodic;
-
+  G4LogicalVolumePeriodic *logical_periodic;
 };
