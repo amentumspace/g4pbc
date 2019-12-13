@@ -1,7 +1,9 @@
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
+#include "ParallelWorld.hh"
 #include "Shielding.hh"
 
+#include "G4ParallelWorldPhysics.hh"
 #include "G4PeriodicBoundaryPhysics.hh"
 #include "G4RunManager.hh"
 
@@ -44,7 +46,14 @@ int main(int argc, char** argv)
   G4String run_id = particle_name + "_" + std::to_string(test_mode) + "_" +
     std::to_string(job_id);
 
-  DetectorConstruction* dc = new DetectorConstruction(run_id, test_mode);
+  G4double world_xy = 2*mm;
+  G4double world_z = 10*mm;
+  DetectorConstruction* dc = new DetectorConstruction(
+    test_mode, world_xy, world_z);
+  G4String parallelWorldName = "ParallelWorld";
+  dc->RegisterParallelWorld(new ParallelWorld(
+    parallelWorldName, test_mode, run_id, world_xy, world_z));
+
   run_manager->SetUserInitialization(dc);
 
   Shielding* physics_list = new Shielding();
@@ -57,6 +66,8 @@ int main(int argc, char** argv)
 
   if ((test_mode == 2) || (test_mode == 3)) physics_list->RegisterPhysics(PBC);
 
+  physics_list->RegisterPhysics(new G4ParallelWorldPhysics(parallelWorldName));
+
   run_manager->SetUserInitialization(physics_list);
 
   run_manager->SetUserInitialization(new ActionInitialization());
@@ -67,10 +78,6 @@ int main(int argc, char** argv)
 
   //the macro file will configure the default source and range cuts
   ui_manager->ApplyCommand("/control/execute config.mac");
-
-  //override the lateral dimensions of the source to match the world volume
-  double world_xy = dc->GetWorldXY();
-  double world_z = dc->GetWorldZ();
 
   ui_manager->ApplyCommand("/gps/pos/centre 0. 0. " + std::to_string(world_z/2.0)
   + " mm");

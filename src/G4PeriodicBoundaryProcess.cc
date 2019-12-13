@@ -5,6 +5,7 @@
 #include "G4LogicalVolumePeriodic.hh"
 #include "G4Navigator.hh"
 #include "G4ParticleChangeForPeriodic.hh"
+#include "G4SafetyHelper.hh"
 #include "G4TrackingManager.hh"
 #include "G4VTrajectory.hh"
 #include "G4ParallelWorldProcess.hh"
@@ -26,6 +27,12 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
   kCarTolerance = G4GeometryTolerance::GetInstance()->GetSurfaceTolerance();
 
   pParticleChange = &fParticleChange;
+
+  //silence warnings from the safetyhelper
+  G4TransportationManager* transportMgr = 
+    G4TransportationManager::GetTransportationManager();
+  G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
+  fpSafetyHelper->SetVerboseLevel(1);
 
 }
 
@@ -221,21 +228,13 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           fParticleChange.ProposeMomentumDirection(NewMomentum);
           fParticleChange.ProposePolarization(NewPolarization);
           fParticleChange.ProposePosition(NewPosition);
-
-          //we must notify the navigator that we have moved the particle artificially
-          G4Navigator* gNavigator =
-            G4TransportationManager::GetTransportationManager()
-            ->GetNavigatorForTracking();
-          //Locates the volume containing the specified global point.
-
-          gNavigator->SetGeometricallyLimitedStep() ;
-          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
-          gNavigator->LocateGlobalPointAndSetup( NewPosition,
-                                                &NewMomentum,
-                                               true,
-                                               false) ;//do not ignore direction
-          gNavigator->ComputeSafety(NewPosition);
-
+ 
+          G4TransportationManager* transportMgr = 
+            G4TransportationManager::GetTransportationManager();
+          G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
+          // recompute safety based on new position
+          fpSafetyHelper->ComputeSafety(NewPosition);
+          fpSafetyHelper->ReLocateWithinVolume(NewPosition);
 
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();

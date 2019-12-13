@@ -13,15 +13,15 @@
 #include <sstream>
 using namespace std;
 
-DetectorConstruction::DetectorConstruction(G4String runid, int test_mode) :
+DetectorConstruction::DetectorConstruction(int test_mode, 
+  G4double world_xy_, G4double world_z_) :
   G4VUserDetectorConstruction()
 {
 
   logical_scorer = NULL;
-  run_id = runid;
   mode = test_mode;
-  world_xy = 2*mm;
-  world_size_z = 10*mm;
+  world_xy = world_xy_;
+  world_size_z = world_z_;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -51,29 +51,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4PeriodicBoundaryBuilder* pbb = new G4PeriodicBoundaryBuilder();
   G4LogicalVolume* logical_cyclic_world = pbb->Construct(logical_world);
 
-  double scorer_thick = 1*micrometer;
-
-  G4Box* scorer = new G4Box("scorer", world_xy/2.0, world_xy/2.0,
-    scorer_thick/2.0);
-
-  logical_scorer = new G4LogicalVolume(scorer, test_material, "logical_scorer");
-
-  double z_pos = -world_size_z/2.0 + scorer_thick/2.0;
-
-  new G4PVPlacement( 0, G4ThreeVector(0,0,z_pos), logical_scorer, "physical_scorer"
-    , logical_cyclic_world, false, 0);
-
-  logical_scorer->SetVisAttributes(G4Color::Red());
-
   return physical_world;
 }
 
-void DetectorConstruction::ConstructSDandField()
-{
-  G4SDManager* sd_manager = G4SDManager::GetSDMpointer();
-
-  SensitiveDetector* sd = new SensitiveDetector("scorer_" + run_id);
-  sd_manager->AddNewDetector(sd);
-
-  logical_scorer->SetSensitiveDetector(sd);
-}
+void DetectorConstruction::ConstructSDandField(){;}
