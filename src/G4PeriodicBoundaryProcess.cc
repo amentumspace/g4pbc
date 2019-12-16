@@ -229,12 +229,28 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           fParticleChange.ProposePolarization(NewPolarization);
           fParticleChange.ProposePosition(NewPosition);
  
+          /*
           G4TransportationManager* transportMgr = 
             G4TransportationManager::GetTransportationManager();
           G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
+
           // recompute safety based on new position
           fpSafetyHelper->ComputeSafety(NewPosition);
-          fpSafetyHelper->ReLocateWithinVolume(NewPosition);
+          fpSafetyHelper->ReLocateWithinVolume(NewPosition);*/
+
+          //we must notify the navigator that we have moved the particle artificially
+          G4Navigator* gNavigator =
+            G4TransportationManager::GetTransportationManager()
+            ->GetNavigatorForTracking();
+          //Locates the volume containing the specified global point.
+
+          gNavigator->SetGeometricallyLimitedStep() ;
+          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
+          gNavigator->LocateGlobalPointAndSetup( NewPosition,
+                                                &NewMomentum,
+                                               true,
+                                               false) ;//do not ignore direction
+          gNavigator->ComputeSafety(NewPosition);
 
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
