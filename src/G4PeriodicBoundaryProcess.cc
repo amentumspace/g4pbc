@@ -33,6 +33,7 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
     G4TransportationManager::GetTransportationManager();
   G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
   fpSafetyHelper->SetVerboseLevel(1);
+  fpSafetyHelper->EnableParallelNavigation(true);
 
 }
 
@@ -235,9 +236,10 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
 
           // recompute safety based on new position
+
           fpSafetyHelper->ComputeSafety(NewPosition);
           fpSafetyHelper->ReLocateWithinVolume(NewPosition);
-
+          fpSafetyHelper->Locate(NewPosition, NewMomentum) ;
 
           /*we must notify the navigator that we have moved the particle artificially
           G4Navigator* gNavigator = G4TransportationManager::GetTransportationManager()
