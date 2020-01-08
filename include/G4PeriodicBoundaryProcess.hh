@@ -23,6 +23,8 @@ enum G4PeriodicBoundaryProcessStatus {
   NotAtBoundary
  };
 
+class G4SafetyHelper; 
+
 class G4PeriodicBoundaryProcess : public G4VDiscreteProcess {
 
 public:
@@ -76,6 +78,8 @@ private:
 
   bool periodic_x; bool periodic_y; bool periodic_z;
 
+  G4SafetyHelper* fpSafetyHelper;
+
 };
 
 inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition&
@@ -84,9 +88,9 @@ inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition
 
   bool applicable = true;
 
-  if( &aParticleType == G4OpticalPhoton::OpticalPhoton() )
-    applicable = true;
-  else if ( &aParticleType == G4AntiNeutrinoE::AntiNeutrinoE() )
+  // do not apply to neutrinos as can lead to very long simulation times if normal to periodic boundary
+
+  if ( &aParticleType == G4AntiNeutrinoE::AntiNeutrinoE() )
     applicable = false;
   else if ( &aParticleType == G4NeutrinoE::NeutrinoE() )
     applicable = false;

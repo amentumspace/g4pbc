@@ -28,12 +28,9 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
 
   pParticleChange = &fParticleChange;
 
-  //silence warnings from the safetyhelper
-  G4TransportationManager* transportMgr = 
-    G4TransportationManager::GetTransportationManager();
-  G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
-  fpSafetyHelper->SetVerboseLevel(1);
-  fpSafetyHelper->EnableParallelNavigation(true);
+  // silence warnings from the safetyhelper
+  fpSafetyHelper = nullptr;
+  
 
 }
 
@@ -228,31 +225,37 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
           fParticleChange.ProposeMomentumDirection(NewMomentum);
           fParticleChange.ProposePolarization(NewPolarization);
-          fParticleChange.ProposePosition(NewPosition);
- 
-          /*notify transpotation manager that we moved the particle*/
-          G4TransportationManager* transportMgr = 
-            G4TransportationManager::GetTransportationManager();
-          G4SafetyHelper* fpSafetyHelper = transportMgr->GetSafetyHelper();  
+          fParticleChange.ProposePosition(NewPosition);     
 
-          // recompute safety based on new position
+          /* TODO implement this code to be compatibnle with parallel geometry navigation
+          if(!fpSafetyHelper){
 
+            G4TransportationManager* transportMgr = 
+              G4TransportationManager::GetTransportationManager();
+            fpSafetyHelper = transportMgr->GetSafetyHelper();  
+            fpSafetyHelper->SetVerboseLevel(0);
+            fpSafetyHelper->EnableParallelNavigation(true);
+            
+          }         
+          fpSafetyHelper->ReLocateWithinVolume(NewPosition); 
           fpSafetyHelper->ComputeSafety(NewPosition);
-          fpSafetyHelper->ReLocateWithinVolume(NewPosition);
-          fpSafetyHelper->Locate(NewPosition, NewMomentum) ;
-
-          /*we must notify the navigator that we have moved the particle artificially
-          G4Navigator* gNavigator = G4TransportationManager::GetTransportationManager()
-            ->GetNavigatorForTracking();
-
-          //Locates the volume containing the specified global point.
-          gNavigator->SetGeometricallyLimitedStep() ;
-          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
-          gNavigator->LocateGlobalPointAndSetup( NewPosition, &NewMomentum, false) ;
-          //do not ignore direction
-          gNavigator->ComputeSafety(NewPosition);
           */
 
+          //we must notify the navigator that we have moved the particle artificially
+          G4Navigator* gNavigator =
+            G4TransportationManager::GetTransportationManager()
+            ->GetNavigatorForTracking();
+          //Locates the volume containing the specified global point.
+
+          gNavigator->SetGeometricallyLimitedStep() ;
+          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
+          gNavigator->LocateGlobalPointAndSetup( NewPosition,
+                                                &NewMomentum,
+                                               true,
+                                               false) ;//do not ignore direction
+          gNavigator->ComputeSafety(NewPosition);
+
+                    
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
           G4TrackingManager* tckm = evtm->GetTrackingManager();
