@@ -75,6 +75,8 @@ G4VModularPhysicsList base class.
 
 Arguments 1-3 of the constructor determine which cartesian axes are periodic. The default settings are periodic in x and y directions, and normal boundary conditions in the z direction; ie., an infinite planar geometry. 
 
+NOTE periodic boundary process does not apply to parallel geometries. 
+
 ## Construct the geometry
 
 The second step is to define a periodic world volume in your detector construction
