@@ -29,7 +29,7 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
   pParticleChange = &fParticleChange;
 
   // pointer to the safety helper used to shift particle in real and parallel geoms
-  fpSafetyHelper = nullptr;
+  fpSafetyHelper = nullptrptr;
   
 
 }
@@ -97,7 +97,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
   if ( verboseLevel > 0 ) 
     G4cout << "Post step logical " << lvol->GetName() << G4endl;
 
-  G4LogicalVolume* dlvol = NULL;
+  G4LogicalVolume* dlvol = nullptrptr;
 
   if (lvol->GetNoDaughters() > 0) {
 
@@ -225,7 +225,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
           G4TrackingManager* tckm = evtm->GetTrackingManager();
-          G4VTrajectory* fpTrajectory = NULL;
+          G4VTrajectory* fpTrajectory = nullptr;
           fpTrajectory = tckm->GimmeTrajectory();
           if (fpTrajectory) fpTrajectory->AppendStep(pStep);
 
