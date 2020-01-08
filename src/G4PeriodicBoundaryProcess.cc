@@ -5,7 +5,6 @@
 #include "G4LogicalVolumePeriodic.hh"
 #include "G4Navigator.hh"
 #include "G4ParticleChangeForPeriodic.hh"
-#include "G4SafetyHelper.hh"
 #include "G4TrackingManager.hh"
 #include "G4VTrajectory.hh"
 #include "G4ParallelWorldProcess.hh"
@@ -28,10 +27,6 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
 
   pParticleChange = &fParticleChange;
 
-  // pointer to the safety helper used to shift particle in real and parallel geoms
-  fpSafetyHelper = nullptrptr;
-  
-
 }
 
 G4PeriodicBoundaryProcess::~G4PeriodicBoundaryProcess(){}
@@ -45,10 +40,22 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   theStatus = Undefined;
 
+  // Get hyperStep from  G4ParallelWorldProcess
+  // we do not want to apply periodic boundary conditions in the parallel geometry
+  const G4Step* hStep = G4ParallelWorldProcess::GetHyperStep();
+  if (hStep) { 
+    if (verboseLevel > 0) {
+      G4cout << "Periodic boundary condition process not apply to parallel geometries" << G4endl;
+      BoundaryProcessVerbose();
+    }
+    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
+  }
+
   fParticleChange.InitializeForPostStep(aTrack);
 
   const G4Step* pStep = &aStep;
 
+  // only apply the process if we're on a boundary
   G4bool isOnBoundary = (pStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary);
 
   if (!isOnBoundary) {
@@ -89,15 +96,50 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   G4ThreeVector theGlobalPoint = pStep->GetPostStepPoint()->GetPosition();
 
+  // calculation of the global normal. code adapted from G4OpBoundaryProcess
+
+  G4bool valid = false;
+  //  Use the new method for Exit Normal in global coordinates,
+  //    which provides the normal more reliably.
+  // get from the real-world navigator (process not applied to parallel worlds)
+  theGlobalNormal = G4TransportationManager::GetTransportationManager()\
+    ->GetNavigatorForTracking()->GetGlobalExitNormal(theGlobalPoint,&valid);
+
+  if (valid) {
+    theGlobalNormal = -theGlobalNormal;
+  }
+  else {
+    G4cout << "global normal " << theGlobalNormal << G4endl;
+    G4ExceptionDescription ed;
+    ed << " G4PeriodicBoundaryProcess/PostStepDoIt(): "
+      << " The Navigator reports that it returned an invalid normal" << G4endl;
+    G4Exception("G4PeriodicBoundaryProcess::PostStepDoIt", "PerBoun01",
+      EventMustBeAborted,ed,
+      "Invalid Surface Normal - Geometry must return valid surface normal");
+  }
+
+  if (OldMomentum * theGlobalNormal > 0.0) {
+
+    if ( verboseLevel > 0 ) {
+
+      G4cout << "theGlobalNormal points in a wrong direction." << G4endl;
+      G4cout << "Invalid Surface Normal - Geometry must return valid surface \
+        normal pointing in the right direction" << G4endl;
+
+    }
+
+    theGlobalNormal = -theGlobalNormal;
+  }
+
   /*when the post step point is in the world volume, the eldest daughter will
-  be the periodic world volume, which has a skin associated. so we cycle or reflect*/
+  be the periodic world volume so we cycle*/
 
   G4LogicalVolume* lvol = thePostPV->GetLogicalVolume();
 
   if ( verboseLevel > 0 ) 
     G4cout << "Post step logical " << lvol->GetName() << G4endl;
 
-  G4LogicalVolume* dlvol = nullptrptr;
+  G4LogicalVolume* dlvol = NULL;
 
   if (lvol->GetNoDaughters() > 0) {
 
@@ -139,30 +181,6 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
         if (verboseLevel > 0) G4cout << " on periodic plane " << G4endl;
 
-        if(reflecting_walls){ // we are periodic through specular reflection
-
-          if (verboseLevel > 0) G4cout << " reflecting " << G4endl;
-
-          G4double PdotN = OldMomentum * theGlobalNormal;
-          NewMomentum = OldMomentum - (2.0 * PdotN) * theGlobalNormal;
-          G4double EdotN = OldPolarization * theGlobalNormal;
-          NewPolarization = -OldPolarization + (2.*EdotN)*theGlobalNormal;
-          theStatus = Reflection;
-
-          NewMomentum = NewMomentum.unit();//unit vector
-          NewPolarization = NewPolarization.unit();
-
-          if (verboseLevel > 0) {
-            G4cout << " New Momentum Direction: " << NewMomentum << G4endl;
-            G4cout << " New Polarization:       " << NewPolarization << G4endl;
-            BoundaryProcessVerbose();
-          }
-
-          fParticleChange.ProposeMomentumDirection(NewMomentum);
-          fParticleChange.ProposePolarization(NewPolarization);
-
-        } else { // we are periodic through cyclic
-
           theStatus = Cycling;
 
           if ( verboseLevel > 0) G4cout << " periodic " << G4endl;
@@ -193,20 +211,6 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           fParticleChange.ProposePolarization(NewPolarization);
           fParticleChange.ProposePosition(NewPosition);     
 
-          /* TODO implement this code to be compatibnle with parallel geometry navigation
-          if(!fpSafetyHelper){
-
-            G4TransportationManager* transportMgr = 
-              G4TransportationManager::GetTransportationManager();
-            fpSafetyHelper = transportMgr->GetSafetyHelper();  
-            fpSafetyHelper->SetVerboseLevel(0);
-            fpSafetyHelper->EnableParallelNavigation(true);
-            
-          }         
-          fpSafetyHelper->ReLocateWithinVolume(NewPosition); 
-          fpSafetyHelper->ComputeSafety(NewPosition);
-          */
-
           //we must notify the navigator that we have moved the particle artificially
           G4Navigator* gNavigator =
             G4TransportationManager::GetTransportationManager()
@@ -216,20 +220,16 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           gNavigator->SetGeometricallyLimitedStep() ;
           //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
           gNavigator->LocateGlobalPointAndSetup( NewPosition,
-                                                &NewMomentum,
-                                               true,
-                                               false) ;//do not ignore direction
+            &NewMomentum, true, false) ; //do not ignore direction
           gNavigator->ComputeSafety(NewPosition);
 
-                    
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
           G4TrackingManager* tckm = evtm->GetTrackingManager();
-          G4VTrajectory* fpTrajectory = nullptr;
+          G4VTrajectory* fpTrajectory = NULL;
           fpTrajectory = tckm->GimmeTrajectory();
           if (fpTrajectory) fpTrajectory->AppendStep(pStep);
 
-        }
       }
     }
   }

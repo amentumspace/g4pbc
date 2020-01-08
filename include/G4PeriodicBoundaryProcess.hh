@@ -23,8 +23,6 @@ enum G4PeriodicBoundaryProcessStatus {
   NotAtBoundary
  };
 
-class G4SafetyHelper; 
-
 class G4PeriodicBoundaryProcess : public G4VDiscreteProcess {
 
 public:
@@ -77,8 +75,6 @@ private:
   G4bool reflecting_walls;
 
   bool periodic_x; bool periodic_y; bool periodic_z;
-
-  G4SafetyHelper* fpSafetyHelper;
 
 };
 
