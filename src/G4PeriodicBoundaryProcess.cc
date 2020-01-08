@@ -89,40 +89,6 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   G4ThreeVector theGlobalPoint = pStep->GetPostStepPoint()->GetPosition();
 
-  // calculation of the global normal. code adapted from G4OpBoundaryProcess
-
-  G4bool valid = false;
-  //  Use the new method for Exit Normal in global coordinates,
-  //    which provides the normal more reliably.
-  theGlobalNormal = G4TransportationManager::GetTransportationManager()\
-    ->GetNavigatorForTracking()->GetGlobalExitNormal(theGlobalPoint,&valid);
-
-  if (valid) {
-    theGlobalNormal = -theGlobalNormal;
-  }
-  else {
-    G4cout << "global normal " << theGlobalNormal << G4endl;
-    G4ExceptionDescription ed;
-    ed << " G4PeriodicBoundaryProcess/PostStepDoIt(): "
-      << " The Navigator reports that it returned an invalid normal" << G4endl;
-    G4Exception("G4PeriodicBoundaryProcess::PostStepDoIt", "PerBoun01",
-      EventMustBeAborted,ed,
-      "Invalid Surface Normal - Geometry must return valid surface normal");
-  }
-
-  if (OldMomentum * theGlobalNormal > 0.0) {
-
-    if ( verboseLevel > 0 ) {
-
-      G4cout << "theGlobalNormal points in a wrong direction." << G4endl;
-      G4cout << "Invalid Surface Normal - Geometry must return valid surface \
-        normal pointing in the right direction" << G4endl;
-
-    }
-
-    theGlobalNormal = -theGlobalNormal;
-  }
-
   /*when the post step point is in the world volume, the eldest daughter will
   be the periodic world volume, which has a skin associated. so we cycle or reflect*/
 
