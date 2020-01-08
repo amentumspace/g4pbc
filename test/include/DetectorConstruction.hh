@@ -10,7 +10,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
 
-    DetectorConstruction(G4String runid="", int test_mode=0);
+    DetectorConstruction(int test_mode, G4double world_xy_, G4double world_z_);
    ~DetectorConstruction();
 
     virtual G4VPhysicalVolume* Construct();

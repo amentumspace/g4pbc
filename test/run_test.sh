@@ -2,7 +2,7 @@
 rm *.hdf5 *.log
 
 NPARTICLES=10000
-NJOBS=4 #assumes you are running on a multi-core machine
+NJOBS=10 #assumes you are running on a multi-core machine
 PARTICLENAMES="geantino gamma e- proton neutron"
 
 # use the parallel utility to parallelise across available cores
@@ -16,4 +16,4 @@ parallel --env NPARTICLES --env NJOBS --env PARTICLENAMES \
 ::: $PARTICLENAMES ::: $NPARTICLES ::: $NJOBS
 
 #open images in the default viewer
-#eog .
+eog .

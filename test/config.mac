@@ -1,5 +1,5 @@
 /run/verbose 1
-/tracking/verbose 0
+/tracking/verbose 1
 
 /gps/particle geantino
 
