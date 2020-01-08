@@ -58,13 +58,11 @@ int main(int argc, char** argv)
 
   Shielding* physics_list = new Shielding();
 
-  bool use_reflecting = (test_mode == 3);
-
   G4PeriodicBoundaryPhysics* PBC = new G4PeriodicBoundaryPhysics("Cyclic", true,
-    true, false, use_reflecting);
+    true, false);
   PBC->SetVerboseLevel(0);
 
-  if ((test_mode == 2) || (test_mode == 3)) physics_list->RegisterPhysics(PBC);
+  if (test_mode == 2) physics_list->RegisterPhysics(PBC);
 
   physics_list->RegisterPhysics(new G4ParallelWorldPhysics(parallelWorldName));
 

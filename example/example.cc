@@ -30,7 +30,7 @@ int main(int argc, char** argv)
   //arguments: physics list name, cycle x, y, z, reflecting walls
   G4PeriodicBoundaryPhysics* pbc = new G4PeriodicBoundaryPhysics("Periodic", true,
     true, false, false);
-  pbc->SetVerboseLevel(0);
+  pbc->SetVerboseLevel(1);
 
   physics_list->RegisterPhysics(pbc);
 

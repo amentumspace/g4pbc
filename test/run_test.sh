@@ -8,7 +8,7 @@ PARTICLENAMES="geantino gamma e- proton neutron"
 # use the parallel utility to parallelise across available cores
 parallel --env NPARTICLES --env NJOBS --env PARTICLENAMES \
 --jobs $NJOBS -q bash -c './test {1} {2} {3} {4} >> {1}.log' \
-::: $PARTICLENAMES ::: $(seq 0 3) ::: $NPARTICLES ::: $(seq 1 $NJOBS)
+::: $PARTICLENAMES ::: $(seq 0 2) ::: $NPARTICLES ::: $(seq 1 $NJOBS)
 
 #run the analysis in parallel
 parallel --env NPARTICLES --env NJOBS --env PARTICLENAMES \
