@@ -4,6 +4,7 @@
 #include "G4ios.hh"
 #include "G4LogicalVolumePeriodic.hh"
 #include "G4Navigator.hh"
+#include "G4PathFinder.hh"
 #include "G4ParticleChangeForPeriodic.hh"
 #include "G4TrackingManager.hh"
 #include "G4VTrajectory.hh"
@@ -27,6 +28,8 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
 
   pParticleChange = &fParticleChange;
 
+  G4PathFinder::GetInstance()->SetVerboseLevel(0);
+
 }
 
 G4PeriodicBoundaryProcess::~G4PeriodicBoundaryProcess(){}
@@ -40,17 +43,6 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   theStatus = Undefined;
 
-  // Get hyperStep from  G4ParallelWorldProcess
-  // we do not want to apply periodic boundary conditions in the parallel geometry
-  const G4Step* hStep = G4ParallelWorldProcess::GetHyperStep();
-  if (hStep) { 
-    if (verboseLevel > 0) {
-      G4cout << "Periodic boundary condition process not apply to parallel geometries" << G4endl;
-      BoundaryProcessVerbose();
-    }
-    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
-  }
-
   fParticleChange.InitializeForPostStep(aTrack);
 
   const G4Step* pStep = &aStep;
@@ -58,7 +50,11 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
   // only apply the process if we're on a boundary
   G4bool isOnBoundary = (pStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary);
 
-  if (!isOnBoundary) {
+  // Get hyperStep from  G4ParallelWorldProcess
+  // we do not want to apply periodic boundary conditions in the parallel geometry
+  const G4Step* hStep = G4ParallelWorldProcess::GetHyperStep();
+  
+  if (!isOnBoundary || !hStep) {
     theStatus = NotAtBoundary;
     if (verboseLevel > 0) BoundaryProcessVerbose();
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
@@ -215,13 +211,16 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
           G4Navigator* gNavigator =
             G4TransportationManager::GetTransportationManager()
             ->GetNavigatorForTracking();
+
+          gNavigator->LocateGlobalPointAndSetup( NewPosition,
+                      &NewMomentum, true, false) ; //do not ignore directio
+          gNavigator->ComputeSafety(NewPosition);
+
           //Locates the volume containing the specified global point.
 
-          gNavigator->SetGeometricallyLimitedStep() ;
-          //gNavigator->LocateGlobalPointWithinVolume(NewPosition);
-          gNavigator->LocateGlobalPointAndSetup( NewPosition,
-            &NewMomentum, true, false) ; //do not ignore direction
-          gNavigator->ComputeSafety(NewPosition);
+          //had to include this for geant4.10.5 otherwise errors
+          G4PathFinder::GetInstance()->ReLocate(NewPosition);
+          G4PathFinder::GetInstance()->ComputeSafety(NewPosition);
 
           //force drawing of the step prior to periodic the particle
           G4EventManager* evtm = G4EventManager::GetEventManager();
