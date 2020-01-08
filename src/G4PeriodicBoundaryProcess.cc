@@ -28,7 +28,7 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
 
   pParticleChange = &fParticleChange;
 
-  // silence warnings from the safetyhelper
+  // pointer to the safety helper used to shift particle in real and parallel geoms
   fpSafetyHelper = nullptr;
   
 
@@ -91,7 +91,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track& aTrack, const G4Step& aSt
 
   // calculation of the global normal. code adapted from G4OpBoundaryProcess
 
-  G4bool valid;
+  G4bool valid = false;
   //  Use the new method for Exit Normal in global coordinates,
   //    which provides the normal more reliably.
   theGlobalNormal = G4TransportationManager::GetTransportationManager()\
