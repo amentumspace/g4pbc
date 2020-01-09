@@ -40,7 +40,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   //continue defining the geometry with the logical Periodic world as mother volume
 
-  // define a volume with dimensions the same as those of the Periodic world volume
+  // define a volume with dimensions smaller those of the Periodic world volume
+  // checking that PBC only occure at periodic world boundaries.
   G4Box* daughter = new G4Box("daughter", world_size_xy/4, world_size_xy/4, world_size_z/2);
   G4LogicalVolume* logical_daughter = new G4LogicalVolume(daughter, air, "logical_daughter");
 

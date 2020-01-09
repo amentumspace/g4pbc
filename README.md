@@ -13,14 +13,10 @@ The following occurs when G4PBC is used in a Geant4 simulation:
  - the world is resized to avoid sharing a surface with the periodic world
  - daughter volumes use the periodic world volume as their mother volume
  - the cartesian coordinates that are periodic are selected
- - the periodic boundary is chosen as either cyclic or reflecting wall
  - the periodic boundary process is applied to all particles
  - when a particle steps onto the surface of the periodic world volume,
  and if the normal to the surface is in a direction that is periodic:
-  - if the boundary is cyclic
     - the position of the particle is translated to the opposite face of the periodic world
-  - if the boundary is reflecting
-    - the direction and polarisation vectors are transformed in accordance with specular reflection
 
 This package contains the G4PBC library, an example application to
 demonstrate usage, and a test application to assure correct operation for
@@ -72,12 +68,14 @@ G4VModularPhysicsList base class.
 
     PhysicsList* physics_list = new PhysicsList();
     G4PeriodicBoundaryPhysics* pbc = \
-      new G4PeriodicBoundaryPhysics("PBC", true, true, false, false);
+      new G4PeriodicBoundaryPhysics("PBC", true, true, false);
     pbc->SetVerboseLevel(0);
 
     physics_list->RegisterPhysics(pbc);
 
-Arguments 1-3 of the constructor determine which cartesian axes are periodic. The default settings are periodic in x and y directions, and normal boundary conditions in the z direction; ie., an infinite planar geometry. The final argument is a flag to use the reflecting wall approach, rather than the default cyclic conditions.
+Arguments 1-3 of the constructor determine which cartesian axes are periodic. The default settings are periodic in x and y directions, and normal boundary conditions in the z direction; ie., an infinite planar geometry. 
+
+NOTE periodic boundary process does not apply to parallel geometries. 
 
 ## Construct the geometry
 
@@ -142,13 +140,12 @@ or in batch mode without visualisation
 
     $ ./example run.mac
 
-|  |  |
------------- | -------------
-![Cyclic Boundary Example](./example/g4cbp_example1.png) | ![Reflecting Wall Example](./example/g4cbp_example2.png)
+
+[Cyclic Boundary Example](./example/g4cbp_example1.png)
 
 Figure 1: Expected output of the application when running in
 interactive mode with visualisation. A geantino is tracked through the geometry
-accounting for cyclic (left) and reflecting wall (right) boundary conditions.
+accounting for cyclic boundary conditions.
 
 # Test application
 
@@ -181,8 +178,7 @@ The simulation runs in a number of modes:
 
   - 0 - geometry with a semi-infinite lateral extent
   - 1 - geometry with a finite lateral extent with normal boundary conditions
-  - 2 - same as 1, with cyclic boundary conditions, and
-  - 3 - same as 1, with reflecting wall boundary conditions.
+  - 2 - same as 1, with cyclic boundary conditions 
 
 ## Build
 
@@ -200,7 +196,7 @@ Batch mode:
 
 particle_type is a string that must match that used by Geant4; for example, 'e-' for the electron.
 
-test_mode is an integer between 0 and 3 (see Description above). The default value is 0.
+test_mode is an integer between 0 and 2 (see Description above). The default value is 0.
 
 number_of_primaries is self-explanatory. The default value is 1.
 
@@ -270,7 +266,7 @@ This package includes code developed by Members of the
 
 ## License
 
-Copyright (c) 2016-2019 Amentum Pty Ltd
+Copyright (c) 2020 Amentum Pty Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

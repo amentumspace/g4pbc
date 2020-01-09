@@ -17,9 +17,9 @@ class Analysis:
     #
     def __init__(self):
         self.particle_name = "geantino"
-        self.number_modes = 4
+        self.number_modes = 3
         self.labels = ['semi-infinite world', 'finite world',
-            'finite world (cyclic)', 'finite world (reflecting)']
+            'finite world (cyclic)']
         de = 0.02 # MeV
         self.e_bins = np.arange(0.0, 1.0+de, de) #ensure the final bin is considered
         dpz = 0.02 #
