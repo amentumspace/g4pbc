@@ -30,6 +30,17 @@ G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess(const G4String& processName
 
   G4PathFinder::GetInstance()->SetVerboseLevel(0);
 
+  if(reflecting_walls){
+
+    G4ExceptionDescription ed;
+    ed << " G4PeriodicBoundaryProcess/G4PeriodicBoundaryProcess(): "
+      << " Reflecting wall boundaries no longer support. Use cyclic instead." << G4endl;
+    G4Exception("G4PeriodicBoundaryProcess::G4PeriodicBoundaryProcess", "PerBoun01",
+      RunMustBeAborted,ed,
+      "Unsupported period boundary mode");
+
+  }
+
 }
 
 G4PeriodicBoundaryProcess::~G4PeriodicBoundaryProcess(){}
