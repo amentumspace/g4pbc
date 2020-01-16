@@ -98,6 +98,8 @@ inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition
     applicable = false;
   else if ( &aParticleType == G4NeutrinoTau::NeutrinoTau() )
     applicable = false;
+  else if ( &aParticleType == G4OpticalPhoton::OpticalPhoton() )
+    applicable = false;
 
    return applicable;
 
