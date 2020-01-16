@@ -4,4 +4,4 @@
 /gps/energy 1 MeV
 /gps/ang/type iso
 /gps/pos/centre 0 0 0 m
-/run/beamOn 1000
+/run/beamOn 100

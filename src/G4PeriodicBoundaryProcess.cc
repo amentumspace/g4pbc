@@ -63,7 +63,7 @@ G4PeriodicBoundaryProcess::PostStepDoIt(const G4Track &aTrack, const G4Step &aSt
   // we do not want to apply periodic boundary conditions in the parallel geometry
   const G4Step *hStep = G4ParallelWorldProcess::GetHyperStep();
 
-  if (!isOnBoundary || !hStep)
+  if (!isOnBoundary)
   {
     theStatus = NotAtBoundary;
     if (verboseLevel > 0)
