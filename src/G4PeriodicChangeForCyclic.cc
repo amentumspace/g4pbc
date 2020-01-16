@@ -78,6 +78,10 @@ G4Step* G4ParticleChangeForPeriodic::UpdateStepForPostStep(G4Step* pStep)
   pStep->AddTotalEnergyDeposit( theLocalEnergyDeposit );
   pStep->AddNonIonizingEnergyDeposit( theNonIonizingEnergyDeposit );
 
+  // need to set the boundary status to ensure compatibility to G4OpBoundary process
+  // as it comes last and will try to implement at periodic surface 
+  pPostStepPoint->SetStepStatus(fUndefined);
+
   return pStep;
 }
 
