@@ -65,7 +65,9 @@ void G4PeriodicBoundaryPhysics::ConstructProcess(){
     if(pbc->IsApplicable(*particle)){
       if(verboseLevel > 0)
         G4cout << "Adding pbc to " << particleName << G4endl;
-      pManager->AddDiscreteProcess(pbc);
+      pManager->AddDiscreteProcess(pbc);          
+      pManager->SetProcessOrderingToLast(pbc,idxPostStep);
+
     }
   }
 }

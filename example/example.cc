@@ -2,6 +2,7 @@
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "Shielding.hh"
+#include "G4OpticalPhysics.hh"
 
 #include "G4PeriodicBoundaryPhysics.hh"
 #include "G4RunManager.hh"
@@ -27,13 +28,16 @@ int main(int argc, char** argv)
 
   Shielding* physics_list = new Shielding();
 
+
   //arguments: physics list name, cycle x, y, z, reflecting walls
   G4PeriodicBoundaryPhysics* pbc = new G4PeriodicBoundaryPhysics("Periodic", true,
     true, false, false);
   pbc->SetVerboseLevel(0);
 
   physics_list->RegisterPhysics(pbc);
-
+  // for testing optical photons
+  physics_list->RegisterPhysics(new G4OpticalPhysics());
+  
   run_manager->SetUserInitialization(physics_list);
 
   run_manager->SetUserInitialization(new ActionInitialization());
