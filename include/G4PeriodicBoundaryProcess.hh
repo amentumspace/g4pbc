@@ -84,7 +84,9 @@ inline G4bool G4PeriodicBoundaryProcess::IsApplicable(const G4ParticleDefinition
 
   bool applicable = true;
 
-  // do not apply to neutrinos as can lead to very long simulation times if normal to periodic boundary
+  // do not apply to neutrinos as can lead to very long simulation times if normal 
+  // to periodic boundary
+  // also do not apply to optical photons as boundary process triggered after PBC
 
   if ( &aParticleType == G4AntiNeutrinoE::AntiNeutrinoE() )
     applicable = false;
