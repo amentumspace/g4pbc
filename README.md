@@ -205,7 +205,7 @@ the random number generator. The default value is 0.
 
 ### Geometry
 
-The world volume is composed of silicon dioxide with z-dimension of 10 mm.
+The world volume is composed of water with z-dimension of 10 mm.
 The lateral exent in X and Y directions is 2 m for mode 0, and 2 mm for
 modes 1-3.
 
@@ -213,7 +213,7 @@ modes 1-3.
 
 The primary beam, defined in the config.mac macro file, is a point source
 located at (0,0,5 mm) with an isotropic angular distribution. It is mono-energetic
-with energy of 1 MeV. The default particle is the geantino.
+with energy of 100 MeV. The default particle is the geantino.
 
 The type of particle and the number of primary particles are determined by
 command line arguments at run-time.

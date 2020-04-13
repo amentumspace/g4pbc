@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 rm *.hdf5 *.log
 
-NPARTICLES=10000
+NPARTICLES=100000
 NJOBS=10 #assumes you are running on a multi-core machine
 PARTICLENAMES="geantino gamma e- proton neutron"
 

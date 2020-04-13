@@ -31,7 +31,7 @@ DetectorConstruction::~DetectorConstruction()
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
 
-  G4Material* test_material = G4NistManager::Instance()->FindOrBuildMaterial("G4_SILICON_DIOXIDE");
+  G4Material* test_material = G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER");
 
   double factor = 1000.0;
 

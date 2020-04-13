@@ -3,7 +3,7 @@
 
 /gps/particle geantino
 
-/gps/energy 1 MeV
+/gps/energy 100 MeV
 /gps/ang/type iso
 /gps/pos/type Plane
 /gps/pos/centre 0. 0. 0. cm
