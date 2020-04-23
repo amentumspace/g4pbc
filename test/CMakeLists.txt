@@ -15,7 +15,7 @@ find_package(g4pbc REQUIRED NO_MODULE)
 include_directories(${g4pbc_INCLUDE_DIRS})
 
 # HDF5
-find_package(HDF5 REQUIRED COMPONENTS C HL CXX)
+find_package(HDF5 REQUIRED)
 include_directories(${HDF5_INCLUDE_DIRS} hdf5_hl_cpp )
 
 include(${Geant4_USE_FILE})
