@@ -22,6 +22,13 @@ This package contains the G4PBC library, an example application to
 demonstrate usage, and a test application to assure correct operation for
 several particle types in a material of interest.
 
+Publications using g4pbc: 
+
+- Vira, Alisha D., et al. "Designing a boron nitride polyethylene composite for shielding neutrons." APL Materials 11.10 (2023).
+- Ogawa, Toru. Analysis system for behavior of water-containing fuel debris. fdradc. No. JAEA-DATA/CODE--2021-014. Japan Atomic Energy Agency, 2022.
+- Doughney, T., et al. "GEANT4 Surface Model for Background Radiation in Complex Environments." 2022 IEEE Nuclear Science Symposium and Medical Imaging Conference (NSS/MIC). IEEE, 2022.
+
+
 # Dependencies
 
   The Geant4 Monte Carlo toolkit and dependencies thereof
