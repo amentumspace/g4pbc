@@ -12,57 +12,6 @@ G4ParticleChangeForPeriodic::G4ParticleChangeForPeriodic() : G4VParticleChange()
 
 G4ParticleChangeForPeriodic::~G4ParticleChangeForPeriodic(){}
 
-G4ParticleChangeForPeriodic::G4ParticleChangeForPeriodic(
-  const G4ParticleChangeForPeriodic &right): G4VParticleChange(right)
-{
-  if (verboseLevel>1)
-    G4cout << "G4ParticleChangeForPeriodic::  copy constructor is called " << G4endl;
-
-  currentTrack = right.currentTrack;
-  proposedMomentumDirection = right.proposedMomentumDirection;
-  proposedPolarization = right.proposedPolarization;
-  proposedPosition = right.proposedPosition;
-}
-
-
-// assignment operator
-G4ParticleChangeForPeriodic & G4ParticleChangeForPeriodic::operator=(
-                           const G4ParticleChangeForPeriodic &right)
-{
-  if (verboseLevel>1)
-    G4cout << "G4ParticleChangeForPeriodic:: assignment operator is called " << G4endl;
-
-  if (this != &right) {
-    if (theNumberOfSecondaries>0) {
-      if (verboseLevel>0) {
-        G4cout << "G4ParticleChangeForPeriodic: assignment operator Warning  ";
-        G4cout << "theListOfSecondaries is not empty ";
-      }
-      for (G4int index= 0; index<theNumberOfSecondaries; index++){
-        if ( (*theListOfSecondaries)[index] ) delete (*theListOfSecondaries)[index] ;
-      }
-    }
-    delete theListOfSecondaries;
-    theListOfSecondaries =  new G4TrackFastVector();
-    theNumberOfSecondaries = right.theNumberOfSecondaries;
-    for (G4int index = 0; index<theNumberOfSecondaries; index++){
-    G4Track* newTrack =  new G4Track(*((*right.theListOfSecondaries)[index] ));
-    theListOfSecondaries->SetElement(index, newTrack);                            }
-
-    theStatusChange = right.theStatusChange;
-    theLocalEnergyDeposit = right.theLocalEnergyDeposit;
-    theSteppingControlFlag = right.theSteppingControlFlag;
-    theParentWeight = right.theParentWeight;
-
-    currentTrack = right.currentTrack;
-    proposedMomentumDirection = right.proposedMomentumDirection;
-    proposedPolarization = right.proposedPolarization;
-    proposedPosition = right.proposedPosition;
-  }
-  return *this;
-}
-
-
 G4Step* G4ParticleChangeForPeriodic::UpdateStepForPostStep(G4Step* pStep)
 {
   G4StepPoint* pPostStepPoint = pStep->GetPostStepPoint();
