@@ -34,11 +34,8 @@ public:
 
   virtual void DumpInfo() const;
 
-
-protected:
-
-  G4ParticleChangeForPeriodic(const G4ParticleChangeForPeriodic &right);
-  G4ParticleChangeForPeriodic & operator=(const G4ParticleChangeForPeriodic &right);
+  G4ParticleChangeForPeriodic(const G4ParticleChangeForPeriodic& right) = delete;
+  G4ParticleChangeForPeriodic& operator=(const G4ParticleChangeForPeriodic& right) = delete;
 
 private:
 
