@@ -1,5 +1,5 @@
-/vis/open OGLSQt 600x600-0+0
-#/vis/open OGLSX 600x600-0+0
+#/vis/open OGLSQt 600x600-0+0
+/vis/open OGLSX 600x600-0+0
 /vis/drawVolume
 /vis/viewer/flush
 /vis/scene/add/trajectories smooth

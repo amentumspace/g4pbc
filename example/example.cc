@@ -6,18 +6,17 @@
 #include "G4PeriodicBoundaryPhysics.hh"
 #include "G4RunManager.hh"
 
-#ifdef G4UI_USE
 #include "G4UIExecutive.hh"
-#endif
-
 #include "G4UImanager.hh"
-
-#ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
-#endif
 
 int main(int argc, char** argv)
 {
+
+  G4UIExecutive* ui = nullptr;
+  if (argc == 1) {
+    ui = new G4UIExecutive(argc, argv);
+  }
 
   G4RunManager* run_manager = new G4RunManager();
 
@@ -40,32 +39,26 @@ int main(int argc, char** argv)
 
   run_manager->Initialize();
 
-  G4UImanager* ui_manager = G4UImanager::GetUIpointer();
 
-  if (argc!=1) {
+  // Visualization
+  G4VisExecutive* visManager = nullptr;
+  // Get the pointer to the User Interface manager
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  if (nullptr == ui) {
+    // Batch mode
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
-    ui_manager->ApplyCommand(command+fileName);
-  } else {
-
-#ifdef G4VIS_USE
-  G4VisManager* vis_manager = new G4VisExecutive;
-  vis_manager->Initialize();
-#endif
-
-#ifdef G4UI_USE
-    G4UIExecutive * ui_executive = new G4UIExecutive(argc,argv);
-#ifdef G4VIS_USE
-    ui_manager->ApplyCommand("/control/execute vis.mac");
-#endif
-    ui_executive->SessionStart();
-    delete ui_executive;
-#endif
-
-#ifdef G4VIS_USE
-  delete vis_manager;
-#endif
+    UImanager->ApplyCommand(command + fileName);
   }
+  else {
+    visManager = new G4VisExecutive;
+    visManager->Initialize();
+    UImanager->ApplyCommand("/control/execute vis.mac");
+    ui->SessionStart();
+    delete ui;
+    delete visManager;
+  }
+
 
   delete run_manager;
 
