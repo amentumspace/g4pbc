@@ -27,13 +27,12 @@ Publications using g4pbc:
 - Vira, Alisha D., et al. "Designing a boron nitride polyethylene composite for shielding neutrons." APL Materials 11.10 (2023).
 - Ogawa, Toru. Analysis system for behavior of water-containing fuel debris. fdradc. No. JAEA-DATA/CODE--2021-014. Japan Atomic Energy Agency, 2022.
 - Doughney, T., et al. "GEANT4 Surface Model for Background Radiation in Complex Environments." 2022 IEEE Nuclear Science Symposium and Medical Imaging Conference (NSS/MIC). IEEE, 2022.
+- Le, Tuan Anh, et al. "Modeling water radiolysis with Geant4-DNA: Impact of the temporal structure of the irradiation pulse under oxygen conditions." arXiv preprint arXiv:2409.11993 (2024).
 
 
 # Dependencies
 
   The Geant4 Monte Carlo toolkit and dependencies thereof
-
-  The git version control system
 
 # Obtaining source code
 
@@ -273,7 +272,7 @@ This package includes code developed by Members of the
 
 ## License
 
-Copyright (c) 2020 Amentum Pty Ltd
+Copyright (c) 2024 Amentum Pty Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -114,7 +114,7 @@ inline void G4ParticleChangeForPeriodic::InitializeForPostStep(const G4Track& tr
   theStatusChange = track.GetTrackStatus();
   theLocalEnergyDeposit = 0.0;
   theNonIonizingEnergyDeposit = 0.0;
-  InitializeSecondaries(track);
+  InitializeSecondaries();
   theParentWeight = track.GetWeight();
   isParentWeightProposed = false;
   proposedMomentumDirection = track.GetMomentumDirection();
